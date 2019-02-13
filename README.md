@@ -12,13 +12,13 @@ A collection of general purpose Sum Types and monads built on top of [hojberg/su
 import { Just, Nothing } from 'seidr';
 
 Just("Loki").caseOf({
-	Nothing: () => "N/A",
-	Just: name => `Hello ${name}`, 	
+  Nothing: () => "N/A",
+  Just: name => `Hello ${name}`, 	
 }); // => "Hello Loki"
 
 Nothing().caseOf({
-	Nothing: () => "N/A",
-	Just: name => `Hello ${name}`, 	
+  Nothing: () => "N/A",
+  Just: name => `Hello ${name}`, 	
 }); // => "N/A"
 
 // Map doesn't run on Nothing
@@ -37,13 +37,13 @@ Nothing().flatMap(name => Just(name.toUpperCase())); // => Nothing()
 import { Ok, Err } from 'seidr';
 
 Ok("Loki").caseOf({
-	Err: err => err,
-	Ok: name => `Hello ${name}`, 	
+  Err: err => err,
+  Ok: name => `Hello ${name}`, 	
 }); // => "Hello Loki"
 
 Err("oops").caseOf({
-	Err: err => err
-	Just: (name) => `Hello ${name}`, 	
+  Err: err => err
+  Just: (name) => `Hello ${name}`, 	
 }); // => "oops"
 
 // Map doesn't run on Err
