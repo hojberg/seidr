@@ -48,4 +48,20 @@ describe('Maybe', () => {
       });
     });
   });
+
+  describe('fromNullable', () => {
+    describe('when passed a null or undefined value', () => {
+      test('it returns a Nothing', () => {
+        expect(Maybe.fromNullable(undefined)).toEqual(Nothing());
+        expect(Maybe.fromNullable(null)).toEqual(Nothing());
+      });
+    });
+
+    describe('when passed a valid value', () => {
+      test('it returns a Just', () => {
+        expect(Maybe.fromNullable("Test")).toEqual(Just("Test"));
+        expect(Maybe.fromNullable(123)).toEqual(Just(123));
+      });
+    });
+  });
 });
