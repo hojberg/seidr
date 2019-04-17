@@ -6,7 +6,7 @@ class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
     return Just(t);
   }
 
-  static fromNullable<T>(t?: T): Maybe<T> {
+  static fromNullable<T>(t: T | undefined | null): Maybe<T> {
     return t ? Just(t) : Nothing();
   }
 
