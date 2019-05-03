@@ -1,6 +1,8 @@
 import { Result, Ok, Err } from '../src/result';
 import { Nothing, Just } from '../src/maybe';
 
+console.log(Result.fromNullable);
+
 describe('Result', () => {
   describe('Err', () => {
     describe('map', () => {
