@@ -23,6 +23,13 @@ class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
       Just: (data: T) => f(data),
     });
   }
+
+  public getOrElse(elseCase: T): T {
+    return this.caseOf({
+      Nothing: () => elseCase,
+      Just: (data: T) => data,
+    });
+  }
 }
 
 function Nothing<T>(): Maybe<T> {
