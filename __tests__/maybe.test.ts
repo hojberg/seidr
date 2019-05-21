@@ -25,6 +25,12 @@ describe('Maybe', () => {
         });
       });
     });
+
+    describe('getOrElse', () => {
+      test('it returns the fallback value', () => {
+        expect(Nothing().getOrElse(0)).toEqual(0);
+      });
+    });
   });
 
   describe('Just', () => {
@@ -45,6 +51,12 @@ describe('Maybe', () => {
         test('it returns the Just from the mapper', () => {
           expect(Just(3).flatMap((x: number) => Just(16))).toEqual(Just(16));
         });
+      });
+    });
+
+    describe('getOrElse', () => {
+      test('it returns the value', () => {
+        expect(Just(3).getOrElse(0)).toEqual(3);
       });
     });
   });
