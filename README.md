@@ -50,11 +50,27 @@ Err("oops").caseOf({
 Ok("Loki").map(name => name.toUpperCase()); // => Just("LOKI")
 Err("oops").map(name => name.toUpperCase()); // => Err("oops")
 
-// flatMap unnests a layer when the mapper returns a Maybe
+// flatMap unnests a layer when the mapper returns a Result
 Ok("Loki").flatMap(name => Ok(name.toUpperCase())); // => Ok("LOKI")
 Err("oops").flatMap(name => Ok(name.toUpperCase())); // => Err("oops")
 
 // Result and Maybe are not isomorphic as "oops" is lost when converting Err to Nothing
-Ok("Loki").toMaybe(); // => Just("Loki")
-Err("oops").toMaybe(); // => Nothing()
+Ok("Loki").toMaybe(); // => Ok("Loki")
+Err("oops").toMaybe(); // => Err("oops")
+```
+
+## Effect
+
+```ts
+import { Effect } from 'seidr';
+
+const fooEff = Effect(() => "foo") // Effect("foo")
+
+fooEff.unsafePerform() // => 'foo'
+
+// Map doesn't run on Err
+fooEff.map(val => val.toUpperCase()); // => Effect("FOO")
+
+// flatMap unnests a layer when the mapper returns an Effect
+fooEffect.flatMap(val => Effect(() => val + 'bar'); // => Effect("foobar")
 ```
