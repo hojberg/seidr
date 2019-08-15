@@ -11,7 +11,7 @@ describe('Maybe', () => {
     describe('flatMap', () => {
       describe('with a mapper that returns Nothing', () => {
         test('it disregards the mapper and returns a Nothing', () => {
-          expect(Nothing<number>().flatMap((x: number) => Nothing())).toEqual(
+          expect(Nothing<number>().flatMap((_: number) => Nothing())).toEqual(
             Nothing()
           );
         });
@@ -19,7 +19,7 @@ describe('Maybe', () => {
 
       describe('with a mapper that returns Just', () => {
         test('it disregards the mapper and returns a Nothing', () => {
-          expect(Nothing<number>().flatMap((x: number) => Just(2))).toEqual(
+          expect(Nothing<number>().flatMap((_: number) => Just(2))).toEqual(
             Nothing()
           );
         });
@@ -43,13 +43,13 @@ describe('Maybe', () => {
     describe('flatMap', () => {
       describe('with a mapper that returns Nothing', () => {
         test('it returns a Nothing', () => {
-          expect(Just(3).flatMap((x: number) => Nothing())).toEqual(Nothing());
+          expect(Just(3).flatMap((_: number) => Nothing())).toEqual(Nothing());
         });
       });
 
       describe('with a mapper that returns Just', () => {
         test('it returns the Just from the mapper', () => {
-          expect(Just(3).flatMap((x: number) => Just(16))).toEqual(Just(16));
+          expect(Just(3).flatMap((_: number) => Just(16))).toEqual(Just(16));
         });
       });
     });
