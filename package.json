@@ -22,6 +22,6 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
-    "sums-up": "^1.0.3"
+    "sums-up": "^2.0.1"
   }
 }
