@@ -55,8 +55,8 @@ Ok("Loki").flatMap(name => Ok(name.toUpperCase())); // => Ok("LOKI")
 Err("oops").flatMap(name => Ok(name.toUpperCase())); // => Err("oops")
 
 // Result and Maybe are not isomorphic as "oops" is lost when converting Err to Nothing
-Ok("Loki").toMaybe(); // => Ok("Loki")
-Err("oops").toMaybe(); // => Err("oops")
+Ok("Loki").toMaybe(); // => Just("Loki")
+Err("oops").toMaybe(); // => Nothing()
 ```
 
 ## Effect
