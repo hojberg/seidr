@@ -74,3 +74,50 @@ fooEff.map(val => val.toUpperCase()); // => Effect("FOO")
 // flatMap unnests a layer when the mapper returns an Effect
 fooEffect.flatMap(val => Effect(() => val + 'bar'); // => Effect("foobar")
 ```
+
+## RemoteData
+
+A sums-up implementation of the original pattern described by Kris Jenkins:
+http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html
+
+This is a helpful sum type for modelling data being fetched from the network.
+
+```typescript
+type RemoteData<E, A> = NotAsked | Loading | Failure<E> | Success<A>
+```
+
+```typescript
+import { RemoteData, NotAsked, Loading, Failure, Success } from 'seidr';
+
+NotAsked().caseOf({
+  NotAsked: () => "not asked",
+  _: () => "everything else",
+}); // => "not asked"
+
+Loading().caseOf({
+  Loading: () => "loading",
+  _: () => "everything else",
+}); // => "loading"
+
+Failure("oops").caseOf({
+  Failure: err => err
+  _: () => "everything else",
+}); // => "oops"
+
+Success("Yay").caseOf({
+  Success: data => data
+  _: () => "everything else",
+}); // => "yay"
+
+// Map only runs on Success
+Succecss("Loki").map(name => name.toUpperCase()); // => Just("LOKI")
+Failure("oops").map(name => name.toUpperCase()); // => Failure("oops")
+Loading().map(name => name.toUpperCase()); // => Loading()
+NotAsked().map(name => name.toUpperCase()); // => NotAsked()
+
+// flatMap unnests a layer when the mapper returns a Result when run on Success
+Succecss("Loki").map(name => Success(name.toUpperCase())); // => Just("LOKI")
+Failure("oops").map(name => Success(name.toUpperCase())); // => Failure("oops")
+Loading().map(name => Success(name.toUpperCase())); // => Loading()
+NotAsked().map(name => Success(name.toUpperCase())); // => NotAsked()
+```
