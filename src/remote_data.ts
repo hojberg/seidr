@@ -1,19 +1,20 @@
 import SumType from "sums-up";
 import Monad from "./monad";
 
-type RemoteDataVariants<T> = {
+type RemoteDataVariants<E, T> = {
   NotAsked: [];
   Loading: [];
-  Failure: [Error];
+  Failure: [E];
   Success: [T];
 };
 
-class RemoteData<T> extends SumType<RemoteDataVariants<T>> implements Monad<T> {
-  public static of<T>(t: T): RemoteData<T> {
+class RemoteData<E, T> extends SumType<RemoteDataVariants<E, T>>
+  implements Monad<T> {
+  public static of<E, T>(t: T): RemoteData<E, T> {
     return Success(t);
   }
 
-  public map<U>(f: (t: T) => U): RemoteData<U> {
+  public map<U>(f: (t: T) => U): RemoteData<E, U> {
     return this.caseOf({
       NotAsked: () => NotAsked(),
       Loading: () => Loading(),
@@ -22,7 +23,7 @@ class RemoteData<T> extends SumType<RemoteDataVariants<T>> implements Monad<T> {
     });
   }
 
-  public flatMap<U>(f: (t: T) => RemoteData<U>): RemoteData<U> {
+  public flatMap<U>(f: (t: T) => RemoteData<E, U>): RemoteData<E, U> {
     return this.caseOf({
       NotAsked: () => NotAsked(),
       Loading: () => Loading(),
@@ -32,20 +33,20 @@ class RemoteData<T> extends SumType<RemoteDataVariants<T>> implements Monad<T> {
   }
 }
 
-function NotAsked<T>(): RemoteData<T> {
-  return new RemoteData<T>("NotAsked");
+function NotAsked<E, T>(): RemoteData<E, T> {
+  return new RemoteData<E, T>("NotAsked");
 }
 
-function Loading<T>(): RemoteData<T> {
-  return new RemoteData<T>("Loading");
+function Loading<E, T>(): RemoteData<E, T> {
+  return new RemoteData<E, T>("Loading");
 }
 
-function Failure<T>(e: Error): RemoteData<T> {
-  return new RemoteData<T>("Failure", e);
+function Failure<E, T>(e: E): RemoteData<E, T> {
+  return new RemoteData<E, T>("Failure", e);
 }
 
-function Success<T>(data: T): RemoteData<T> {
-  return new RemoteData<T>("Success", data);
+function Success<E, T>(data: T): RemoteData<E, T> {
+  return new RemoteData<E, T>("Success", data);
 }
 
 export default RemoteData;

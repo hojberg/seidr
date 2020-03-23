@@ -4,7 +4,7 @@ describe("RemoteData", () => {
   describe("NotAsked", () => {
     describe("map", () => {
       test("it disregards the mapper and returns a NotAsked", () => {
-        expect(NotAsked<number>().map(x => x + 2)).toEqual(NotAsked());
+        expect(NotAsked<Error, number>().map(x => x + 2)).toEqual(NotAsked());
       });
     });
 
@@ -26,7 +26,7 @@ describe("RemoteData", () => {
   describe("Loading", () => {
     describe("map", () => {
       test("it disregards the mapper and returns a Loading", () => {
-        expect(Loading<number>().map(x => x + 2)).toEqual(Loading());
+        expect(Loading<Error, number>().map(x => x + 2)).toEqual(Loading());
       });
     });
 
@@ -48,9 +48,9 @@ describe("RemoteData", () => {
   describe("Failure", () => {
     describe("map", () => {
       test("it disregards the mapper and returns a Failure", () => {
-        expect(Failure<number>(new Error("oops")).map(x => x + 2)).toEqual(
-          Failure(new Error("oops"))
-        );
+        expect(
+          Failure<Error, number>(new Error("oops")).map(x => x + 2)
+        ).toEqual(Failure(new Error("oops")));
       });
     });
 
@@ -84,7 +84,7 @@ describe("RemoteData", () => {
       describe("with a mapper that returns Failure", () => {
         test("it returns a Failure", () => {
           expect(
-            Success<number>(3).flatMap(_ => Failure(new Error("oops")))
+            Success<Error, number>(3).flatMap(_ => Failure(new Error("oops")))
           ).toEqual(Failure(new Error("oops")));
         });
       });
