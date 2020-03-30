@@ -71,8 +71,11 @@ describe('Maybe', () => {
 
     describe('when passed a valid value', () => {
       test('it returns a Just', () => {
+        expect(Maybe.fromNullable("")).toEqual(Just(""));
         expect(Maybe.fromNullable("Test")).toEqual(Just("Test"));
         expect(Maybe.fromNullable(123)).toEqual(Just(123));
+        expect(Maybe.fromNullable(0)).toEqual(Just(0));
+        expect(Maybe.fromNullable(false)).toEqual(Just(false));
       });
     });
   });
