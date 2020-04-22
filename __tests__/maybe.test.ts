@@ -52,6 +52,17 @@ describe('Maybe', () => {
           expect(Just(3).flatMap((_: number) => Just(16))).toEqual(Just(16));
         });
       });
+
+      describe('with a mapper that might return Just or Nothing', () => {
+        test('it infers the correct new type value for `T`', () => {
+          // This is more a test of type inference than runtime behavior
+          expect(
+            Just(3)
+              .flatMap(_ => (Math.random() > 0.5 ? Just('hello') : Nothing()))
+              .map(value => value.length)
+          ).toBeTruthy();
+        });
+      });
     });
 
     describe('getOrElse', () => {
