@@ -1,11 +1,11 @@
 import { Ok, Err } from '../src/result';
-import AsyncResult from '../src/async_result';
+import { AsyncResult, AsyncOk, AsyncErr } from '../src/async_result';
 
 describe('AsyncResult', () => {
   describe('PromiseLike<Result>', () => {
     test('it acts as a promise for an equivalent synchronous result', async () => {
-      expect(await new AsyncResult(Ok('neat'))).toEqual(Ok('neat'));
-      expect(await new AsyncResult(Err('boom'))).toEqual(Err('boom'));
+      expect(await AsyncOk('neat')).toEqual(Ok('neat'));
+      expect(await AsyncErr('boom')).toEqual(Err('boom'));
     });
   });
 
@@ -23,14 +23,14 @@ describe('AsyncResult', () => {
 
   describe('toPromise', () => {
     test('returns a resolved promise for an Ok value', async () => {
-      expect(await new AsyncResult(Ok('good')).toPromise()).toBe('good');
+      expect(await AsyncOk('good').toPromise()).toBe('good');
     });
 
     test('returns a rejected promise for an Err value', async () => {
       expect.assertions(1);
 
       try {
-        await new AsyncResult(Err('boom')).toPromise();
+        await AsyncErr('boom').toPromise();
       } catch (error) {
         expect(error).toBe('boom');
       }
@@ -39,7 +39,7 @@ describe('AsyncResult', () => {
 
   describe('caseOf', () => {
     test('returns a promise for the result of the matching arm', async () => {
-      let result = new AsyncResult(Ok('neat')).caseOf({
+      let result = AsyncOk('neat').caseOf({
         Ok: value => value.length,
         Err: () => 0
       });
@@ -48,7 +48,7 @@ describe('AsyncResult', () => {
     });
 
     test('allows arms to themselves be async', async () => {
-      let result = new AsyncResult(Err('boom')).caseOf({
+      let result = AsyncErr('boom').caseOf({
         Ok: () => false,
         Err: async () => true
       });
@@ -59,19 +59,19 @@ describe('AsyncResult', () => {
 
   describe('map', () => {
     test('it runs an Ok value through the mapper and returns a new AsyncResult', async () => {
-      let result = new AsyncResult(Ok('hello')).map(async str => str.length);
+      let result = AsyncOk('hello').map(async str => str.length);
       expect(await result).toEqual(Ok(5));
     });
 
     test('it skips the mapper for an Err value', async () => {
-      let result = new AsyncResult(Err('oh no')).map(() => true);
+      let result = AsyncErr('oh no').map(() => true);
       expect(await result).toEqual(Err('oh no'));
     });
   });
 
   describe('bimap', () => {
     test('it runs an Ok value through the Ok mapper and returns a new AsyncResult', async () => {
-      let result = new AsyncResult(Ok('hello')).bimap(
+      let result = AsyncOk('hello').bimap(
         () => false,
         async str => str.length
       );
@@ -80,7 +80,7 @@ describe('AsyncResult', () => {
     });
 
     test('it runs an Err value through the Err mapper and returns a new AsyncResult', async () => {
-      let result = new AsyncResult(Err([1, 2, 3])).bimap(
+      let result = AsyncErr([1, 2, 3]).bimap(
         async err => err.join(''),
         () => false
       );
@@ -90,37 +90,37 @@ describe('AsyncResult', () => {
 
   describe('flatMap', () => {
     test('it skips the mapper for an Err value', async () => {
-      let result = new AsyncResult(Err('hi')).flatMap(() => Ok(123));
+      let result = AsyncErr('hi').flatMap(() => Ok(123));
       expect(await result).toEqual(Err('hi'));
     });
 
     test('it returns Ok for a mapper that returns an Ok', async () => {
-      let result = new AsyncResult(Ok('hi')).flatMap(str => Ok(str.length));
+      let result = AsyncOk('hi').flatMap(str => Ok(str.length));
       expect(await result).toEqual(Ok(2));
     });
 
     test('it returns Err for a mapper that returns an Err', async () => {
-      let result = new AsyncResult(Ok('hi')).flatMap(str => Err(str.length));
+      let result = AsyncOk('hi').flatMap(str => Err(str.length));
       expect(await result).toEqual(Err(2));
     });
 
     test('it returns Ok for a mapper that returns an Ok promise', async () => {
-      let result = new AsyncResult(Ok('hi')).flatMap(async str => Ok(str.length));
+      let result = AsyncOk('hi').flatMap(async str => Ok(str.length));
       expect(await result).toEqual(Ok(2));
     });
 
     test('it returns Err for a mapper that returns an Err promise', async () => {
-      let result = new AsyncResult(Ok('hi')).flatMap(async str => Err(str.length));
+      let result = AsyncOk('hi').flatMap(async str => Err(str.length));
       expect(await result).toEqual(Err(2));
     });
 
     test('it returns Ok for a mapper that returns an Ok AsyncResult', async () => {
-      let result = new AsyncResult(Ok('hi')).flatMap(str => new AsyncResult(Ok(str.length)));
+      let result = AsyncOk('hi').flatMap(str => AsyncOk(str.length));
       expect(await result).toEqual(Ok(2));
     });
 
     test('it returns Err for a mapper that returns an Err promise', async () => {
-      let result = new AsyncResult(Ok('hi')).flatMap(str => new AsyncResult(Err(str.length)));
+      let result = AsyncOk('hi').flatMap(str => AsyncErr(str.length));
       expect(await result).toEqual(Err(2));
     });
   });
