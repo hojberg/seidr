@@ -9,8 +9,8 @@ class Result<L, R> extends SumType<{ Err: [L]; Ok: [R] }> implements Monad<R> {
 
   public map<U>(f: (t: R) => U): Result<L, U> {
     return this.caseOf({
-      Err: (err: L) => Err<L, U>(err),
-      Ok: (data: R) => Ok<L, U>(f(data)),
+      Err: (err: L) => Err(err),
+      Ok: (data: R) => Ok(f(data)),
     });
   }
 
@@ -19,14 +19,14 @@ class Result<L, R> extends SumType<{ Err: [L]; Ok: [R] }> implements Monad<R> {
    */
   public bimap<C, D>(leftF: (l: L) => C, rightF: (r: R) => D): Result<C, D> {
     return this.caseOf({
-      Err: (err: L) => Err<C, D>(leftF(err)),
-      Ok: (data: R) => Ok<C, D>(rightF(data)),
+      Err: (err: L) => Err(leftF(err)),
+      Ok: (data: R) => Ok(rightF(data)),
     });
   }
 
-  public flatMap<U>(f: (t: R) => Result<L, U>): Result<L, U> {
+  public flatMap<U, V>(f: (t: R) => Result<L | U, V>): Result<L | U, V> {
     return this.caseOf({
-      Err: (err: L) => Err<L, U>(err),
+      Err: (err: L) => Err(err),
       Ok: (data: R) => f(data),
     });
   }
@@ -42,15 +42,15 @@ class Result<L, R> extends SumType<{ Err: [L]; Ok: [R] }> implements Monad<R> {
 /**
  * Constructor for the Err variant (left side) of Result
  */
-function Err<L, R>(error: L): Result<L, R> {
-  return new Result<L, R>('Err', error);
+function Err<L = never, R = never>(error: L): Result<L, R> {
+  return new Result('Err', error);
 }
 
 /**
  * Constructor for the Ok variant (right side) of Result
  */
-function Ok<L, R>(data: R): Result<L, R> {
-  return new Result<L, R>('Ok', data);
+function Ok<L = never, R = never>(data: R): Result<L, R> {
+  return new Result('Ok', data);
 }
 
 export default Result;
