@@ -7,7 +7,7 @@ class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
   }
 
   public static fromNullable<T>(t: T | undefined | null): Maybe<T> {
-    return t ? Just(t) : Nothing();
+    return t === null || t === undefined ? Nothing() : Just(t);
   }
 
   public map<U>(f: (t: T) => U): Maybe<U> {
@@ -24,7 +24,7 @@ class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
     });
   }
 
-  public getOrElse(elseCase: T): T {
+  public getOrElse<U>(elseCase: T | U): T | U {
     return this.caseOf({
       Nothing: () => elseCase,
       Just: (data: T) => data,
@@ -32,7 +32,7 @@ class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
   }
 }
 
-function Nothing<T>(): Maybe<T> {
+function Nothing<T = never>(): Maybe<T> {
   return new Maybe<T>('Nothing');
 }
 
