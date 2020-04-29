@@ -1,5 +1,5 @@
-import Result, { Err, Ok } from './result';
-import Monad from './monad';
+import Result, { Err, Ok } from "./result";
+import Monad from "./monad";
 
 type MaybePromise<T> = T | PromiseLike<T>;
 
@@ -22,15 +22,21 @@ class AsyncResult<L, R> implements PromiseLike<Result<L, R>>, Monad<R> {
 
   // Implement `PromiseLike<Result<L, R>>`
   public then<TResult1 = Result<L, R>, TResult2 = never>(
-    onfulfilled?: ((value: Result<L, R>) => TResult1 | PromiseLike<TResult1>) | null | undefined,
-    onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null | undefined
+    onfulfilled?:
+      | ((value: Result<L, R>) => TResult1 | PromiseLike<TResult1>)
+      | null
+      | undefined,
+    onrejected?:
+      | ((reason: unknown) => TResult2 | PromiseLike<TResult2>)
+      | null
+      | undefined
   ): Promise<TResult1 | TResult2> {
     return this.promise.then(onfulfilled, onrejected);
   }
 
   // This isn't strictly compatible with `SumType`'s `caseOf`,
   // since it returns `Promise<T>` rather than just `T`, but
-  // it's the conceptual equivalent.
+  // it's the conceptual async equivalent.
   public caseOf<T>(conditions: {
     Err: (err: L) => MaybePromise<T>;
     Ok: (value: R) => MaybePromise<T>;
@@ -57,12 +63,18 @@ class AsyncResult<L, R> implements PromiseLike<Result<L, R>>, Monad<R> {
 
   // Implement `Monad<R>`.
   // (This requires multiple signatures to convince TS that we're
-  // successfully implementing monad, even though the second signature
+  // successfully implementing Monad, even though the second signature
   // actually encompasses the first, since an AsyncResult is already
   // a PromiseLike<Result>)
-  public flatMap<U, V>(f: (t: R) => AsyncResult<L | U, V>): AsyncResult<L | U, V>;
-  public flatMap<U, V>(f: (t: R) => MaybePromise<Result<L | U, V>>): AsyncResult<L | U, V>;
-  public flatMap<U, V>(f: (t: R) => MaybePromise<Result<L | U, V>>): AsyncResult<L | U, V> {
+  public flatMap<U, V>(
+    f: (t: R) => AsyncResult<L | U, V>
+  ): AsyncResult<L | U, V>;
+  public flatMap<U, V>(
+    f: (t: R) => MaybePromise<Result<L | U, V>>
+  ): AsyncResult<L | U, V>;
+  public flatMap<U, V>(
+    f: (t: R) => MaybePromise<Result<L | U, V>>
+  ): AsyncResult<L | U, V> {
     return new AsyncResult(
       this.caseOf({
         Err: error => Err(error),
