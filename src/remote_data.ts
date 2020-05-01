@@ -18,8 +18,17 @@ class RemoteData<E, T> extends SumType<RemoteDataVariants<E, T>>
     return this.caseOf({
       NotAsked: () => NotAsked(),
       Loading: () => Loading(),
-      Failure: e => Failure(e),
-      Success: (data: T) => Success(f(data))
+      Failure: (e) => Failure(e),
+      Success: (data) => Success(f(data)),
+    });
+  }
+
+  public mapFailure<D>(f: (e: E) => D): RemoteData<D, T> {
+    return this.caseOf({
+      NotAsked: () => NotAsked(),
+      Loading: () => Loading(),
+      Failure: (e) => Failure(f(e)),
+      Success: (data) => Success(data),
     });
   }
 
@@ -27,8 +36,20 @@ class RemoteData<E, T> extends SumType<RemoteDataVariants<E, T>>
     return this.caseOf({
       NotAsked: () => NotAsked(),
       Loading: () => Loading(),
-      Failure: e => Failure(e),
-      Success: (data: T) => f(data)
+      Failure: (e) => Failure(e),
+      Success: (data: T) => f(data),
+    });
+  }
+
+  public bimap<C, D>(
+    leftF: (l: E) => C,
+    rightF: (r: T) => D
+  ): RemoteData<C, D> {
+    return this.caseOf({
+      NotAsked: () => NotAsked(),
+      Loading: () => Loading(),
+      Failure: (err) => Failure(leftF(err)),
+      Success: (data) => Success(rightF(data)),
     });
   }
 }

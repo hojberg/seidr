@@ -1,5 +1,5 @@
-import SumType from 'sums-up';
-import Monad from './monad';
+import SumType from "sums-up";
+import Monad from "./monad";
 
 class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
   public static of<T>(t: T): Maybe<T> {
@@ -8,6 +8,10 @@ class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
 
   public static fromNullable<T>(t: T | undefined | null): Maybe<T> {
     return t === null || t === undefined ? Nothing() : Just(t);
+  }
+
+  public static withDefault<T, U>(elseCase: T | U, m: Maybe<T>): T | U {
+    return m.getOrElse(elseCase);
   }
 
   public map<U>(f: (t: T) => U): Maybe<U> {
@@ -30,14 +34,21 @@ class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
       Just: (data: T) => data,
     });
   }
+
+  public orElse(f: () => Maybe<T>): Maybe<T> {
+    return this.caseOf({
+      Nothing: () => f(),
+      Just: (_) => this,
+    });
+  }
 }
 
 function Nothing<T = never>(): Maybe<T> {
-  return new Maybe<T>('Nothing');
+  return new Maybe<T>("Nothing");
 }
 
 function Just<T>(data: T): Maybe<T> {
-  return new Maybe<T>('Just', data);
+  return new Maybe<T>("Just", data);
 }
 
 export default Maybe;
