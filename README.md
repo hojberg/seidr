@@ -13,12 +13,12 @@ import { Just, Nothing } from 'seidr';
 
 Just("Loki").caseOf({
   Nothing: () => "N/A",
-  Just: name => `Hello ${name}`, 	
+  Just: name => `Hello ${name}`,
 }); // => "Hello Loki"
 
 Nothing().caseOf({
   Nothing: () => "N/A",
-  Just: name => `Hello ${name}`, 	
+  Just: name => `Hello ${name}`,
 }); // => "N/A"
 
 // Map doesn't run on Nothing
@@ -38,12 +38,12 @@ import { Ok, Err } from 'seidr';
 
 Ok("Loki").caseOf({
   Err: err => err,
-  Ok: name => `Hello ${name}`, 	
+  Ok: name => `Hello ${name}`,
 }); // => "Hello Loki"
 
 Err("oops").caseOf({
   Err: err => err
-  Just: (name) => `Hello ${name}`, 	
+  Just: (name) => `Hello ${name}`,
 }); // => "oops"
 
 // Map doesn't run on Err
@@ -57,6 +57,61 @@ Err("oops").flatMap(name => Ok(name.toUpperCase())); // => Err("oops")
 // Result and Maybe are not isomorphic as "oops" is lost when converting Err to Nothing
 Ok("Loki").toMaybe(); // => Just("Loki")
 Err("oops").toMaybe(); // => Nothing()
+```
+
+## AsyncResult
+
+An `AsyncResult<L, R>` is a hybrid of a `Result<L, R>` and a `Promise<R>`,
+with the type safety and convenience methods of the former, but the ability
+to capture a not-necessarily-evaluated-yet value of the latter.
+
+An `AsyncResult<L, R>` can be constructed from a `Promise<R>` with an
+appropriate function to convert the promise's `unknown` error value to an `L`.
+
+There are also `AsyncOk` and `AsyncErr` functions available as shorthand,
+though in practice these are less frequently useful.
+
+````ts
+import { AsyncResult, AsyncOk, AsyncErr } from 'seidr';
+
+////////////////////////////////////
+// Constructing an AsyncResult
+
+const myPromise: Promise<{ name: string }> = /* ... */;
+
+AsyncResult.fromPromise(err => new Error(String(err)), myPromise);
+// => AsyncResult<Error, { name: string }>
+
+
+////////////////////////////////////
+// Using an AsyncResult
+
+// `caseOf` always returns a promise
+AsyncOk("Loki").caseOf({
+  Err: err => err,
+  Ok: name => `Hello ${name}`,
+}); // => Promise { <resolved>: "Hello Loki" }
+
+AsyncErr("oops").caseOf({
+  Err: err => err,
+  Ok: (name) => `Hello ${name}`,
+}); // => Promise { <resolved>: "oops" }
+
+// `map` doesn't run on Err
+AsyncOk("Loki").map(name => name.toUpperCase());  // => AsyncOk("LOKI")
+AsyncErr("oops").map(name => name.toUpperCase()); // => AsyncErr("oops")
+
+// `flatMap` unnests a layer when the mapper returns a Result, AsyncResult or Promise<Result>
+AsyncOk("Loki").flatMap(name => Ok(name.toUpperCase()));       // => AsyncOk("LOKI")
+AsyncOk("Loki").flatMap(name => AsyncOk(name.toUpperCase()));  // => AsyncOk("LOKI")
+AsyncOk("Loki").flatMap(async name => Ok(name.toUpperCase())); // => AsyncOk("LOKI")
+AsyncErr("oops").flatMap(name => Ok(name.toUpperCase()));      // => AsyncErr("oops")
+
+// `toPromise` returns promise that resolves on Ok or rejects on Err
+// A `Promise<R>` and an `AsyncResult<L, R>` are isomorphic at runtime,
+// as the error value isn't lost; only the type information is.
+AsyncOk("Loki").toPromise();  // Promise { <resolved>: "Loki" }
+AsyncErr("oops").toPromise(); // Promise { <rejected>: "oops" }
 ```
 
 ## Effect
