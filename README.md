@@ -65,9 +65,8 @@ An `AsyncResult<L, R>` is a hybrid of a `Result<L, R>` and a `Promise<R>`,
 with the type safety and convenience methods of the former, but the ability
 to capture a not-necessarily-evaluated-yet value of the latter.
 
-An `AsyncResult<L, R>` can be constructed from a `Promise<Result<L, R>>`, or
-from a `Promise<R>` with an appropriate function to convert the promise's
-`unknown` error value to an `L`.
+An `AsyncResult<L, R>` can be constructed from a `Promise<R>` with an
+appropriate function to convert the promise's `unknown` error value to an `L`.
 
 There are also `AsyncOk` and `AsyncErr` functions available as shorthand,
 though in practice these are less frequently useful.
@@ -78,13 +77,9 @@ import { AsyncResult, AsyncOk, AsyncErr } from 'seidr';
 ////////////////////////////////////
 // Constructing an AsyncResult
 
-declare function asyncMakeAResult(): Promise<Result<string, number>>;
-declare function asyncMakeAValue(): Promise<{ name: string }>;
+const myPromise: Promise<{ name: string }> = /* ... */;
 
-new AsyncResult(asyncMakeAResult());
-// => AsyncResult<string, number>;
-
-AsyncResult.fromPromise(err => new Error(String(err)), asyncMakeAValue());
+AsyncResult.fromPromise(err => new Error(String(err)), myPromise);
 // => AsyncResult<Error, { name: string }>
 
 

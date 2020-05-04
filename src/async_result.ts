@@ -21,16 +21,10 @@ class AsyncResult<L, R> implements PromiseLike<Result<L, R>>, Monad<R> {
   }
 
   // Implement `PromiseLike<Result<L, R>>`
-  public then<TResult1 = Result<L, R>, TResult2 = never>(
-    onfulfilled?:
-      | ((value: Result<L, R>) => TResult1 | PromiseLike<TResult1>)
-      | null
-      | undefined,
-    onrejected?:
-      | ((reason: unknown) => TResult2 | PromiseLike<TResult2>)
-      | null
-      | undefined
-  ): Promise<TResult1 | TResult2> {
+  public then<T = Result<L, R>, U = never>(
+    onfulfilled?: ((value: Result<L, R>) => T | PromiseLike<T>) | null,
+    onrejected?: ((reason: unknown) => U | PromiseLike<U>) | null
+  ): Promise<T | U> {
     return this.promise.then(onfulfilled, onrejected);
   }
 
