@@ -1,4 +1,4 @@
-import Functor from './functor';
+import Functor from "./functor";
 
 interface Applicative<T> extends Functor<T> {
   // TODO
