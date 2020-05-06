@@ -71,7 +71,7 @@ appropriate function to convert the promise's `unknown` error value to an `L`.
 There are also `AsyncOk` and `AsyncErr` functions available as shorthand,
 though in practice these are less frequently useful.
 
-````ts
+```ts
 import { AsyncResult, AsyncOk, AsyncErr } from 'seidr';
 
 ////////////////////////////////////
