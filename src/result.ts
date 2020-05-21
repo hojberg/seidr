@@ -10,6 +10,10 @@ class Result<L, R> extends SumType<{ Err: [L]; Ok: [R] }> implements Monad<R> {
     return x ? Ok(x) : Err(error);
   }
 
+  public static withDefault<T, U>(elseCase: T | U, m: Maybe<T>): T | U {
+    return m.getOrElse(elseCase);
+  }
+
   public map<U>(f: (t: R) => U): Result<L, U> {
     return this.caseOf({
       Err: (err) => Err(err),
@@ -42,6 +46,13 @@ class Result<L, R> extends SumType<{ Err: [L]; Ok: [R] }> implements Monad<R> {
     return this.caseOf({
       Err: (_) => Nothing(),
       Ok: Just,
+    });
+  }
+
+  public getOrElse<U>(elseCase: R | U): R | U {
+    return this.caseOf({
+      Err: (_) => elseCase,
+      Ok: (data: R) => data,
     });
   }
 }
