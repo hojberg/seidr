@@ -44,6 +44,12 @@ describe("Result", () => {
         expect(Err(new Error("oops")).toMaybe()).toEqual(Nothing());
       });
     });
+
+    describe("getOrElse", () => {
+      test("it returns the fallback value", () => {
+        expect(Err("nope").getOrElse(0)).toEqual(0);
+      });
+    });
   });
 
   describe("Ok", () => {
@@ -92,6 +98,12 @@ describe("Result", () => {
     describe("toMaybe", () => {
       test("it returns a Just of the Ok value", () => {
         expect(Ok(3).toMaybe()).toEqual(Just(3));
+      });
+    });
+
+    describe("getOrElse", () => {
+      test("it returns the value", () => {
+        expect(Ok(3).getOrElse(0)).toEqual(3);
       });
     });
   });
