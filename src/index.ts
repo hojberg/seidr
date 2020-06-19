@@ -6,7 +6,7 @@ import Monad from "./monad";
 
 // -- Types
 
-import { Effect } from "./effect";
+import { IO } from "./io";
 import { RemoteData, NotAsked, Loading, Failure, Success } from "./remote_data";
 import { Maybe, Nothing, Just } from "./maybe";
 import { Result, Err, Ok } from "./result";
@@ -22,7 +22,7 @@ export {
   Functor,
   Applicative,
   Monad,
-  Effect,
+  IO,
   RemoteData,
   NotAsked,
   Loading,
@@ -30,5 +30,5 @@ export {
   Success,
   AsyncResult,
   AsyncErr,
-  AsyncOk
+  AsyncOk,
 };
