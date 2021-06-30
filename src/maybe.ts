@@ -21,6 +21,10 @@ class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
     });
   }
 
+  public and<U>(other: Maybe<U>): Maybe<[T, U]> {
+    return this.flatMap(mine => other.map(other => [mine, other]));
+  }
+
   public flatMap<U>(f: (t: T) => Maybe<U>): Maybe<U> {
     return this.caseOf({
       Nothing: () => Nothing(),

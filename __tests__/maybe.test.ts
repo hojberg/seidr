@@ -26,6 +26,16 @@ describe("Maybe", () => {
       });
     });
 
+    describe("and", () => {
+      test("it returns Nothing and-ed to a Nothing", () => {
+        expect(Nothing<number>().and(Nothing<number>())).toEqual(Nothing());
+      });
+
+      test("it returns Nothing and-ed to a Just", () => {
+        expect(Nothing<number>().and(Just(1))).toEqual(Nothing());
+      });
+    });
+
     describe("getOrElse", () => {
       test("it returns the fallback value", () => {
         expect(Nothing().getOrElse(0)).toEqual(0);
@@ -43,6 +53,16 @@ describe("Maybe", () => {
     describe("map", () => {
       test("it runs the mapper and re-wraps in a Just", () => {
         expect(Just(3).map((x: number) => x + 2)).toEqual(Just(5));
+      });
+    });
+
+    describe("and", () => {
+      test("it returns Nothing and-ed to a Nothing", () => {
+        expect(Just(1).and(Nothing<number>())).toEqual(Nothing());
+      });
+
+      test("it returns a tuple and-ed to a Just", () => {
+        expect(Just(1).and(Just(2))).toEqual(Just([1,2]));
       });
     });
 
