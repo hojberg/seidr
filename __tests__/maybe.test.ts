@@ -26,13 +26,23 @@ describe("Maybe", () => {
       });
     });
 
-    describe("and", () => {
-      test("it returns Nothing and-ed to a Nothing", () => {
-        expect(Nothing<number>().and(Nothing<number>())).toEqual(Nothing());
+    describe("mapWith", () => {
+      test("it returns a Nothing when mapWith Nothing", () => {
+        expect(Nothing<number>().mapWith(Nothing<number>(), () => 1)).toEqual(Nothing());
       });
 
-      test("it returns Nothing and-ed to a Just", () => {
-        expect(Nothing<number>().and(Just(1))).toEqual(Nothing());
+      test("it returns a Nothing when mapWith Just", () => {
+        expect(Nothing<number>().mapWith(Just(1), () => 1)).toEqual(Nothing());
+      });
+    });
+
+    describe("pair", () => {
+      test("it returns Nothing paired to a Nothing", () => {
+        expect(Nothing<number>().pair(Nothing<number>())).toEqual(Nothing());
+      });
+
+      test("it returns Nothing paired to a Just", () => {
+        expect(Nothing<number>().pair(Just(1))).toEqual(Nothing());
       });
     });
 
@@ -56,13 +66,23 @@ describe("Maybe", () => {
       });
     });
 
-    describe("and", () => {
-      test("it returns Nothing and-ed to a Nothing", () => {
-        expect(Just(1).and(Nothing<number>())).toEqual(Nothing());
+    describe("mapWith", () => {
+      test("it returns a Nothing when mapWith Nothing", () => {
+        expect(Just(1).mapWith(Nothing<number>(), (a, b) => a + b)).toEqual(Nothing());
       });
 
-      test("it returns a tuple and-ed to a Just", () => {
-        expect(Just(1).and(Just(2))).toEqual(Just([1,2]));
+      test("it returns a Nothing when mapWith Just", () => {
+        expect(Just(1).mapWith(Just(1), (a, b) => a + b)).toEqual(Just(2));
+      });
+    });
+
+    describe("pair", () => {
+      test("it returns Nothing paired to a Nothing", () => {
+        expect(Just(1).pair(Nothing<number>())).toEqual(Nothing());
+      });
+
+      test("it returns a tuple paired to a Just", () => {
+        expect(Just(1).pair(Just(2))).toEqual(Just([1,2]));
       });
     });
 
