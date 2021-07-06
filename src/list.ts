@@ -7,7 +7,7 @@ class List<A>
     Cons: [A, List<A>];
   }>
   implements Functor<A> {
-  static empty() {
+  static empty(): List<unknown> {
     return Nil();
   }
 

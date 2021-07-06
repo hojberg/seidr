@@ -26,6 +26,26 @@ describe("Maybe", () => {
       });
     });
 
+    describe("map2", () => {
+      test("it returns a Nothing when map2 Nothing", () => {
+        expect(Nothing<number>().map2(Nothing<number>(), () => 1)).toEqual(Nothing());
+      });
+
+      test("it returns a Nothing when map2 Just", () => {
+        expect(Nothing<number>().map2(Just(1), () => 1)).toEqual(Nothing());
+      });
+    });
+
+    describe("pair", () => {
+      test("it returns Nothing paired to a Nothing", () => {
+        expect(Nothing<number>().pair(Nothing<number>())).toEqual(Nothing());
+      });
+
+      test("it returns Nothing paired to a Just", () => {
+        expect(Nothing<number>().pair(Just(1))).toEqual(Nothing());
+      });
+    });
+
     describe("filter", () => {
       describe("with a Nothing", () => {
         test("it returns Nothing", () => {
@@ -64,6 +84,26 @@ describe("Maybe", () => {
     describe("map", () => {
       test("it runs the mapper and re-wraps in a Just", () => {
         expect(Just(3).map((x: number) => x + 2)).toEqual(Just(5));
+      });
+    });
+
+    describe("map2", () => {
+      test("it returns a Nothing when map2 Nothing", () => {
+        expect(Just(1).map2(Nothing<number>(), (a, b) => a + b)).toEqual(Nothing());
+      });
+
+      test("it returns a Nothing when map2 Just", () => {
+        expect(Just(1).map2(Just(1), (a, b) => a + b)).toEqual(Just(2));
+      });
+    });
+
+    describe("pair", () => {
+      test("it returns Nothing paired to a Nothing", () => {
+        expect(Just(1).pair(Nothing<number>())).toEqual(Nothing());
+      });
+
+      test("it returns a tuple paired to a Just", () => {
+        expect(Just(1).pair(Just(2))).toEqual(Just([1,2]));
       });
     });
 
