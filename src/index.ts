@@ -10,6 +10,7 @@ import { Effect } from "./effect";
 import { RemoteData, NotAsked, Loading, Failure, Success } from "./remote_data";
 import { Maybe, Nothing, Just } from "./maybe";
 import { Result, Err, Ok } from "./result";
+import { List, Nil, Cons } from "./list";
 import { AsyncResult, AsyncErr, AsyncOk } from "./async_result";
 
 export {
@@ -30,5 +31,8 @@ export {
   Success,
   AsyncResult,
   AsyncErr,
-  AsyncOk
+  AsyncOk,
+  List,
+  Nil,
+  Cons,
 };

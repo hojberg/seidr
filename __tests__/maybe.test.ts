@@ -46,6 +46,27 @@ describe("Maybe", () => {
       });
     });
 
+    describe("filter", () => {
+      describe("with a Nothing", () => {
+        test("it returns Nothing", () => {
+          expect(Nothing<number>().filter((_) => true)).toEqual(Nothing());
+        });
+      });
+
+      describe("with a Just", () => {
+        describe("when the predicate is TRUE", () => {
+          test("it returns the Just", () => {
+            expect(Just<number>(6).filter((n) => n === 6)).toEqual(Just(6));
+          });
+        });
+        describe("when the predicate is FALSE", () => {
+          test("it returns a Nothing", () => {
+            expect(Just<number>(6).filter((n) => n === 5)).toEqual(Nothing());
+          });
+        });
+      });
+    });
+
     describe("getOrElse", () => {
       test("it returns the fallback value", () => {
         expect(Nothing().getOrElse(0)).toEqual(0);
