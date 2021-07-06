@@ -21,12 +21,12 @@ class Maybe<T> extends SumType<{ Nothing: []; Just: [T] }> implements Monad<T> {
     });
   }
 
-  public mapWith<U, R>(other: Maybe<U>, f: (mine: T, other: U) => R): Maybe<R> {
+  public map2<U, R>(other: Maybe<U>, f: (mine: T, other: U) => R): Maybe<R> {
     return this.flatMap(mine => other.map(other => f(mine, other)));
   }
 
   public pair<U>(other: Maybe<U>): Maybe<[T, U]> {
-    return this.mapWith(other, (mine, other) => [mine, other]);
+    return this.map2(other, (mine, other) => [mine, other]);
   }
 
   public flatMap<U>(f: (t: T) => Maybe<U>): Maybe<U> {

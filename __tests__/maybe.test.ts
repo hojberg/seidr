@@ -26,13 +26,13 @@ describe("Maybe", () => {
       });
     });
 
-    describe("mapWith", () => {
-      test("it returns a Nothing when mapWith Nothing", () => {
-        expect(Nothing<number>().mapWith(Nothing<number>(), () => 1)).toEqual(Nothing());
+    describe("map2", () => {
+      test("it returns a Nothing when map2 Nothing", () => {
+        expect(Nothing<number>().map2(Nothing<number>(), () => 1)).toEqual(Nothing());
       });
 
-      test("it returns a Nothing when mapWith Just", () => {
-        expect(Nothing<number>().mapWith(Just(1), () => 1)).toEqual(Nothing());
+      test("it returns a Nothing when map2 Just", () => {
+        expect(Nothing<number>().map2(Just(1), () => 1)).toEqual(Nothing());
       });
     });
 
@@ -66,13 +66,13 @@ describe("Maybe", () => {
       });
     });
 
-    describe("mapWith", () => {
-      test("it returns a Nothing when mapWith Nothing", () => {
-        expect(Just(1).mapWith(Nothing<number>(), (a, b) => a + b)).toEqual(Nothing());
+    describe("map2", () => {
+      test("it returns a Nothing when map2 Nothing", () => {
+        expect(Just(1).map2(Nothing<number>(), (a, b) => a + b)).toEqual(Nothing());
       });
 
-      test("it returns a Nothing when mapWith Just", () => {
-        expect(Just(1).mapWith(Just(1), (a, b) => a + b)).toEqual(Just(2));
+      test("it returns a Nothing when map2 Just", () => {
+        expect(Just(1).map2(Just(1), (a, b) => a + b)).toEqual(Just(2));
       });
     });
 
