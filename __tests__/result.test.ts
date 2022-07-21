@@ -125,6 +125,7 @@ describe("Result", () => {
       test("it returns an Ok", () => {
         expect(Result.fromNullable(err, "Test")).toEqual(Ok("Test"));
         expect(Result.fromNullable(err, 123)).toEqual(Ok(123));
+        expect(Result.fromNullable(err, 0)).toEqual(Ok(0));
       });
     });
   });

@@ -7,7 +7,7 @@ class Result<L, R> extends SumType<{ Err: [L]; Ok: [R] }> implements Monad<R> {
     error: L,
     x: R | undefined | null
   ): Result<L, R> {
-    return x ? Ok(x) : Err(error);
+    return x == null || x == undefined ? Err(error) : Ok(x);
   }
 
   public static withDefault<T, U>(elseCase: T | U, m: Maybe<T>): T | U {
